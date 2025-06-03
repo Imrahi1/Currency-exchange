@@ -13,31 +13,61 @@ public class CurrencyDaoImpl implements CurrencyDao {
     }
 
     @Override
-    public Currency getCurrency() {
+    public Currency getCurrency(String code) {
         Currency currency = null;
         String sql = "select * from Currencies where code = ?";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery(sql)) {
-            currency = new Currency(
-                    rs.getInt(0),
-                    rs.getString(1),
-                    rs.getString(2),
-                    rs.getString(3)
-            );
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, code.toUpperCase());
+            try (ResultSet rs = pstmt.executeQuery()){
+                if (rs.next()){
+                    currency = new Currency(
+                            rs.getInt("ID"),
+                            rs.getString("Code"),
+                            rs.getString("FullName"),
+                            rs.getString("Sign")
+                    );
+                }
+            }
         } catch (SQLException e) {
-            throw new RuntimeException("Error adding transaction", e);
+            throw new RuntimeException("Error fetching currency by code: " + code, e);
         }
         return currency;
     }
 
     @Override
     public void addCurrency(Currency currency) {
-
+        String sql = "INSERT INTO Currencies (Code, FullName, Sign) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, currency.getCode());
+            pstmt.setString(2, currency.getFullName());
+            pstmt.setString(3, currency.getSign());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error adding currency", e);
+        }
     }
 
     @Override
     public List<Currency> getAllCurrencies() {
-        return List.of();
+        List<Currency> currencies = new ArrayList<>();
+        String sql = "select * from Currencies";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()){
+                Currency currency = new Currency(
+                        rs.getInt("ID"),
+                        rs.getString("Code"),
+                        rs.getString("FullName"),
+                        rs.getString("Sign")
+                );
+                currencies.add(currency);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching all currencies: ", e);
+        }
+        return currencies;
     }
 }
