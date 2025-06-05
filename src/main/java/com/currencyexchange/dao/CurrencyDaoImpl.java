@@ -13,20 +13,33 @@ public class CurrencyDaoImpl implements CurrencyDao {
     }
 
     @Override
-    public Currency getCurrency(String code) {
+    public Currency getCurrency(int id) {
         Currency currency = null;
+        String sql = "select * from Currencies where id = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()){
+                if (rs.next()){
+                    return mapCurrencyFromResultSet(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching currency by id: " + id, e);
+        }
+        return currency;
+    }
+
+    @Override
+    public Currency getCurrency(String code) {
+        Currency currency = new Currency();
         String sql = "select * from Currencies where code = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, code.toUpperCase());
             try (ResultSet rs = pstmt.executeQuery()){
                 if (rs.next()){
-                    currency = new Currency(
-                            rs.getInt("ID"),
-                            rs.getString("Code"),
-                            rs.getString("FullName"),
-                            rs.getString("Sign")
-                    );
+                    return mapCurrencyFromResultSet(rs);
                 }
             }
         } catch (SQLException e) {
@@ -57,17 +70,20 @@ public class CurrencyDaoImpl implements CurrencyDao {
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()){
-                Currency currency = new Currency(
-                        rs.getInt("ID"),
-                        rs.getString("Code"),
-                        rs.getString("FullName"),
-                        rs.getString("Sign")
-                );
-                currencies.add(currency);
+                currencies.add(mapCurrencyFromResultSet(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error fetching all currencies: ", e);
         }
         return currencies;
+    }
+
+    public Currency mapCurrencyFromResultSet(ResultSet rs) throws SQLException {
+        Currency currency = new Currency();
+        currency.setId(rs.getInt("ID"));
+        currency.setCode(rs.getString("Code"));
+        currency.setFullName(rs.getString("FullName"));
+        currency.setSign(rs.getString("Sign"));
+        return currency;
     }
 }
