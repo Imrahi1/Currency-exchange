@@ -38,7 +38,21 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
 
     @Override
     public ExchangeRate getExchangeRate(ExchangeRate exchangeRate) {
-        return null;
+        ExchangeRate exchangeRateFromDb = null;
+        String sql = "select * from ExchangeRates where BaseCurrencyId=? and TargetCurrencyId=?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, exchangeRate.getBaseCurrencyId());
+            pstmt.setInt(2, exchangeRate.getTargetCurrencyId());
+            try (ResultSet rs = pstmt.executeQuery()){
+                if (rs.next()){
+                    exchangeRateFromDb = mapExchangeRateFromResultSet(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching exchange rate: ", e);
+        }
+        return exchangeRateFromDb;
     }
 
     @Override
@@ -54,9 +68,9 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
     public ExchangeRate mapExchangeRateFromResultSet(ResultSet rs) throws SQLException {
         ExchangeRate exchangeRate = new ExchangeRate();
         exchangeRate.setId(rs.getInt("ID"));
-        exchangeRate.setBaseCurrencyId(rs.getInt("Code"));
-        exchangeRate.setTargetCurrencyId(rs.getInt("FullName"));
-        exchangeRate.setRate(rs.getFloat("Sign"));
+        exchangeRate.setBaseCurrencyId(rs.getInt("BaseCurrencyId"));
+        exchangeRate.setTargetCurrencyId(rs.getInt("TargetCurrencyId"));
+        exchangeRate.setRate(rs.getFloat("Rate"));
         return exchangeRate;
     }
 }

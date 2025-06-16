@@ -21,6 +21,11 @@ public class ExchangeRate {
         this.rate = rate;
     }
 
+    public ExchangeRate(int baseCurrencyId, int targetCurrencyId) {
+        this.baseCurrencyId = baseCurrencyId;
+        this.targetCurrencyId = targetCurrencyId;
+    }
+
     public int getId() {
         return id;
     }
@@ -51,5 +56,15 @@ public class ExchangeRate {
 
     public void setRate(float rate) {
         this.rate = rate;
+    }
+
+    @Override
+    public String toString() {
+        return "ExchangeRate{" +
+                "id=" + id +
+                ", baseCurrencyId=" + baseCurrencyId +
+                ", targetCurrencyId=" + targetCurrencyId +
+                ", rate=" + rate +
+                '}';
     }
 }

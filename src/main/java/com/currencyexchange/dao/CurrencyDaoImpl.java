@@ -21,7 +21,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()){
                 if (rs.next()){
-                    return mapCurrencyFromResultSet(rs);
+                    currency = mapCurrencyFromResultSet(rs);
                 }
             }
         } catch (SQLException e) {
@@ -39,7 +39,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
             pstmt.setString(1, code.toUpperCase());
             try (ResultSet rs = pstmt.executeQuery()){
                 if (rs.next()){
-                    return mapCurrencyFromResultSet(rs);
+                    currency = mapCurrencyFromResultSet(rs);
                 }
             }
         } catch (SQLException e) {
