@@ -13,7 +13,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
     }
 
     @Override
-    public Currency getCurrency(int id) {
+    public Currency getCurrencyById(int id) {
         Currency currency = null;
         String sql = "select * from Currencies where id = ?";
 
@@ -31,7 +31,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
     }
 
     @Override
-    public Currency getCurrency(String code) {
+    public Currency getCurrencyByCode(String code) {
         Currency currency = new Currency();
         String sql = "select * from Currencies where code = ?";
 
@@ -57,7 +57,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
             pstmt.setString(3, currency.getSign());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error adding currency", e);
+            throw new RuntimeException("Error adding currency: ", e);
         }
     }
 

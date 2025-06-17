@@ -4,18 +4,18 @@ public class ExchangeRate {
     private int id;
     private int baseCurrencyId;
     private int targetCurrencyId;
-    private float rate;
+    private double rate;
 
     public ExchangeRate() {}
 
-    public ExchangeRate(int id, int baseCurrencyId, int targetCurrencyId, float rate) {
+    public ExchangeRate(int id, int baseCurrencyId, int targetCurrencyId, double rate) {
         this.id = id;
         this.baseCurrencyId = baseCurrencyId;
         this.targetCurrencyId = targetCurrencyId;
         this.rate = rate;
     }
 
-    public ExchangeRate(int baseCurrencyId, int targetCurrencyId, float rate) {
+    public ExchangeRate(int baseCurrencyId, int targetCurrencyId, double rate) {
         this.baseCurrencyId = baseCurrencyId;
         this.targetCurrencyId = targetCurrencyId;
         this.rate = rate;
@@ -50,11 +50,11 @@ public class ExchangeRate {
         this.targetCurrencyId = targetCurrencyId;
     }
 
-    public float getRate() {
+    public double getRate() {
         return rate;
     }
 
-    public void setRate(float rate) {
+    public void setRate(double rate) {
         this.rate = rate;
     }
 

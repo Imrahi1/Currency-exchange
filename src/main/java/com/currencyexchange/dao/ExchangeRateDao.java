@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface ExchangeRateDao {
     List<ExchangeRate> getAllExchangeRates();
-    ExchangeRate getExchangeRate(ExchangeRate exchangeRate);
+    ExchangeRate getExchangeRate(int baseCurrencyId, int targetCurrencyId);
+    ExchangeRate getExchangeRateById(int id);
+
     void addExchangeRate(ExchangeRate exchangeRate);
     void updateExchangeRate(ExchangeRate exchangeRate);
 
